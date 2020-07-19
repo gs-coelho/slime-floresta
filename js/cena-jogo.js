@@ -13,23 +13,17 @@ export default class CenaJogo extends Phaser.Scene {
     // const larguraJogo = this.sys.canvas.width;
     // const alturaJogo = this.sys.canvas.height;
     // this.add.image(larguraJogo/2, alturaJogo/2, 'forest');
-    const imagemFundo = this.add.image(0, 0, "forest").setScale(2, 2);
+    const imagemFundo = this.add.image(0, 0, "forest");
     imagemFundo.setOrigin(0, 0);
 
     const plataformas = this.physics.add.staticGroup();
+    plataformas.create(0, 184, "chao").setOrigin(0, 0).refreshBody();
     plataformas
-      .create(0, 368, "chao")
-      .setScale(2, 2)
+      .create(400 - 30, 240 - 56 - 34 - 34, "platform")
       .setOrigin(0, 0)
       .refreshBody();
     plataformas
-      .create(800 - 60, 480 - 112 - 68 - 68, "platform")
-      .setScale(2, 2)
-      .setOrigin(0, 0)
-      .refreshBody();
-    plataformas
-      .create(800 - 120, 480 - 112 - 68, "platform")
-      .setScale(2, 2)
+      .create(400 - 60, 240 - 56 - 34, "platform")
       .setOrigin(0, 0)
       .refreshBody();
 
@@ -45,11 +39,11 @@ export default class CenaJogo extends Phaser.Scene {
 
     // setas da esquerda, direita (ou sem movimento)
     if (this.teclas.left.isDown) {
-      jogador.setVelocityX(-320);
+      jogador.setVelocityX(-160);
       jogador.setFlip(true, false);
       jogador.anims.play("esquerda", true);
     } else if (this.teclas.right.isDown) {
-      jogador.setVelocityX(320);
+      jogador.setVelocityX(160);
       jogador.setFlip(false, false);
       jogador.anims.play("direita", true);
     } else {
@@ -62,7 +56,7 @@ export default class CenaJogo extends Phaser.Scene {
 
     // seta para cima fazendo pular, mas só se estiver no chão
     if (this.teclas.up.isDown && jogador.body.touching.down) {
-      jogador.setVelocityY(-200);
+      jogador.setVelocityY(-100);
       jogador.anims.play("pulando");
     }
   }

@@ -5,8 +5,6 @@ export default class Jogador {
     this.sprite.body.setSize(24, 16);
     this.sprite.setBounce(0.2);
     this.sprite.setCollideWorldBounds(true);
-    this.sprite.setScale(2, 2);
-
     // cria as animações
     cena.anims.create({
       key: "direita",

@@ -3,14 +3,14 @@ import CenaJogo from "./cena-jogo.js";
 
 const config = {
   type: Phaser.AUTO,
-  width: 800,
-  height: 480,
+  width: 400,
+  height: 240,
   parent: "jogo-slime-floresta",
   physics: {
     default: "arcade",
     arcade: {
       gravity: {
-        y: 200,
+        y: 100,
       },
       debug: true,
     },
