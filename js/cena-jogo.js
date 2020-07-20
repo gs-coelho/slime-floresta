@@ -10,13 +10,21 @@ export default class CenaJogo extends Phaser.Scene {
   preload() {}
 
   create() {
-    // const larguraJogo = this.sys.canvas.width;
-    // const alturaJogo = this.sys.canvas.height;
-    // this.add.image(larguraJogo/2, alturaJogo/2, 'forest');
+    // Criação de grupos e variáveis gerais de jogo
+    const LARGURA_JOGO = this.sys.canvas.width;
+    const ALTURA_JOGO = this.sys.canvas.height;
     const imagemFundo = this.add.image(0, 0, "forest");
+    const plataformas = this.physics.add.staticGroup();
+    const slimeballs = this.physics.add.group();
+    const bombas = this.physics.add.group();
+    let pontos = 0;
+    let textoPontos;
+    let gameOver;
+    this.jogador = new Jogador(this);
+
+    // Configuração de objetos de jogo
     imagemFundo.setOrigin(0, 0);
 
-    const plataformas = this.physics.add.staticGroup();
     plataformas.create(0, 184, "chao").setOrigin(0, 0).refreshBody();
     plataformas
       .create(400 - 30, 240 - 56 - 34 - 34, "platform")
@@ -27,9 +35,76 @@ export default class CenaJogo extends Phaser.Scene {
       .setOrigin(0, 0)
       .refreshBody();
 
-    this.jogador = new Jogador(this);
-    this.physics.add.collider(this.jogador.sprite, plataformas);
+    slimeballs.createFromConfig({
+      key: "slimeball",
+      repeat: 4,
+      setXY: { x: 60, y: 0, stepX: 80 },
+      setScale: { x: 0.2, y: 0.2 },
+    });
 
+    slimeballs.children.iterate((slimeball) => {
+      slimeball.setBounceY(Phaser.Math.FloatBetween(0.2, 0.6));
+    });
+
+    textoPontos = this.add.text(10, 200, "Pontuação: 0", {
+      fontSize: "32px",
+      fill: "#000",
+      fontFamily: "monospace",
+    });
+
+    // Definição de funções
+    function coletaSlimeball(jogador, slimeball) {
+      slimeball.disableBody(true, true);
+
+      pontos += 10;
+      textoPontos.setText(`Pontuação: ${pontos}`);
+
+      if (slimeballs.countActive(true) === 0) {
+        slimeballs.children.iterate((slimeball) => {
+          slimeball.enableBody(true, slimeball.x, 0, true, true);
+        });
+
+        let x =
+          this.jogador.sprite.x < 200
+            ? Phaser.Math.Between(200, 400)
+            : Phaser.Math.Between(0, 200);
+        let bomba = bombas.create(x, 16, "bomba");
+        bomba.setBounce(1);
+        bomba.setCollideWorldBounds(true);
+        bomba.setVelocity(Phaser.Math.Between(-200, 200), 20);
+      }
+    }
+
+    function acertaBomba(jogador, bomba) {
+      this.physics.pause();
+
+      jogador.setTint(0xff0000);
+
+      jogador.anims.play("atoa");
+
+      gameOver = true;
+    }
+
+    // Configuração de colisores e sobreposições
+    this.physics.add.collider(slimeballs, plataformas);
+    this.physics.add.collider(this.jogador.sprite, plataformas);
+    this.physics.add.overlap(
+      this.jogador.sprite,
+      slimeballs,
+      coletaSlimeball,
+      null,
+      this
+    );
+    this.physics.add.collider(bombas, plataformas);
+    this.physics.add.collider(
+      this.jogador.sprite,
+      bombas,
+      acertaBomba,
+      null,
+      this
+    );
+
+    // Definindo variável de input
     this.teclas = this.input.keyboard.createCursorKeys();
   }
 
