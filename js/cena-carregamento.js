@@ -48,8 +48,8 @@ export default class CenaCarregamento extends Phaser.Scene {
     this.load.image("forest", "images/forest.jpg");
     this.load.image("chao", "images/chao.png");
     this.load.image("platform", "images/platform.png");
-    this.load.image("slimeball", "../images/slimeball.png");
-    this.load.image("bomba", "../images/bomb.png");
+    this.load.image("slimeball", "images/slimeball.png");
+    this.load.image("bomba", "images/bomb.png");
     this.load.spritesheet("slime", "images/slime-vermelha.png", {
       frameWidth: 24,
       frameHeight: 24,
